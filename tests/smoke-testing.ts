@@ -27,7 +27,7 @@ const options2 = {
   clean: true,
 }
 
-const MQTT_URL = process.env.MQTT_URL || 'mqtt://mqtt.ldmxxz.com:1883'
+const MQTT_URL = process.env.MQTT_URL || ''
 
 const test = async () => {
   const ovonic1 = new OvonicMQTT()
