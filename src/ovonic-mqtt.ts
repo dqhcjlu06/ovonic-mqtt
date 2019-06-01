@@ -1,3 +1,7 @@
+/**
+ * OvonicPacket:
+ * 主要处理 端到端响应，并监听响应结果信息
+ */
 import { EventEmitter } from 'events';
 import mqtt, { IClientOptions, MqttClient, PacketCallback } from 'mqtt'
 

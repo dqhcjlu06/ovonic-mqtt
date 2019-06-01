@@ -1,5 +1,11 @@
-
 import OvonicMQTT, { OvonicPacket } from '../src/ovonic-mqtt'
+
+/**
+ * emqx 支持链接登陆认证
+ * emqx_auth_clientid: clinetId 认证
+ * emqx_auth_username: 用户名、密码认证插件
+ * emqx_auth_jwt: JWT 认证/访问控制 本示例为 jwt链接认证 私密: secret
+ */
 
 const options1 = {
   connectTimeout: 4000,
