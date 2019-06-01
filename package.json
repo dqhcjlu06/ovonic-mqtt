@@ -1,0 +1,34 @@
+{
+  "name": "ovonic-mqtt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index",
+  "typings": "./dist/index",
+  "scripts": {
+    "clean": "rm -fr dist/*",
+    "dist": "npm run clean && tsc",
+    "lint": "npm run lint:ts",
+    "lint:ts": "tslint --project tsconfig.json && tsc --noEmit",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dqhcjlu06/ovonic-mqtt.git"
+  },
+  "keywords": [],
+  "author": "<https://github.com/dqhcjlu06> dqhcjlu06",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dqhcjlu06/ovonic-mqtt/issues"
+  },
+  "homepage": "https://github.com/dqhcjlu06/ovonic-mqtt#readme",
+  "devDependencies": {
+    "@types/node": "^12.0.4",
+    "ts-node": "^8.2.0",
+    "tslint": "^5.17.0",
+    "typescript": "^3.5.1"
+  },
+  "dependencies": {
+    "mqtt": "^3.0.0"
+  }
+}
