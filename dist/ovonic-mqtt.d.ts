@@ -1,4 +1,8 @@
 /// <reference types="node" />
+/**
+ * OvonicPacket:
+ * 主要处理 端到端响应，并监听响应结果信息
+ */
 import { EventEmitter } from 'events';
 import { IClientOptions, MqttClient, PacketCallback } from 'mqtt';
 export declare type MqttClientEvent = 'reconnect' | 'connect' | 'close' | 'error' | 'message' | 'offline' | 'disconnect' | 'end' | 'packetsend' | 'packetreceive';
@@ -15,7 +19,7 @@ declare class OvonicMQTT extends EventEmitter {
     private _clientId;
     private _isConnected;
     constructor();
-    connect(url: string, options: IClientOptions): Promise<unknown>;
+    connect(url: string, options: IClientOptions): Promise<{}>;
     readonly client: MqttClient;
     private onReceiveMsg;
     request(topic: string, message: OvonicPacket, callback?: PacketCallback): Promise<any>;

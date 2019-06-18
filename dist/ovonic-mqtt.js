@@ -11,6 +11,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * OvonicPacket:
+ * 主要处理 端到端响应，并监听响应结果信息
+ */
 const events_1 = require("events");
 const mqtt_1 = __importDefault(require("mqtt"));
 const MAX_TRY_RECONNECT_TIMES = 3;
@@ -43,9 +47,18 @@ class OvonicMQTT extends events_1.EventEmitter {
                     this._client.subscribe(this._clientId);
                     resolve();
                 });
-                this._client.on('close', () => { });
-                this._client.on('disconnect', () => { });
-                this._client.on('offline', () => { });
+                this._client.on('close', () => {
+                    this._isConnected = false;
+                    this.emit('close');
+                });
+                this._client.on('disconnect', () => {
+                    this._isConnected = false;
+                    this.emit('disconnect');
+                });
+                this._client.on('offline', () => {
+                    this._isConnected = false;
+                    this.emit('offline');
+                });
             });
         });
     }
