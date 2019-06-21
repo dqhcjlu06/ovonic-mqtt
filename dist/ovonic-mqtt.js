@@ -66,14 +66,14 @@ class OvonicMQTT extends events_1.EventEmitter {
         return this._client;
     }
     onReceiveMsg(topic, message) {
-        console.log(topic, message.toString());
-        const data = JSON.parse(message.toString());
-        if (data.msgId) {
-            this.emit(data.msgId, message.toString());
-        }
-        else {
-            this.emit(topic, message.toString());
-        }
+        // console.log(topic, message.toString())
+        // const data = JSON.parse(message.toString()) as OvonicPacket
+        this.emit(topic, message.toString());
+        // if (data.msgId) {
+        //   this.emit(data.msgId, message.toString())
+        // } else {
+        //  this.emit(topic, message.toString())
+        // }
     }
     request(topic, message, callback) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -84,7 +84,7 @@ class OvonicMQTT extends events_1.EventEmitter {
                     }
                     this._client.publish(topic, JSON.stringify(message), callback);
                     this._getApiRecv(message.msgId).then((data) => {
-                        this.emit('wxMsgBack', data);
+                        this.emit('MsgBack', data);
                         resolve(data);
                     });
                 });

@@ -69,13 +69,14 @@ class OvonicMQTT extends EventEmitter {
   }
 
   private onReceiveMsg (topic: string, message: string | Buffer) {
-    console.log(topic, message.toString())
-    const data = JSON.parse(message.toString()) as OvonicPacket
-    if (data.msgId) {
-      this.emit(data.msgId, message.toString())
-    } else {
-      this.emit(topic, message.toString())
-    }
+    // console.log(topic, message.toString())
+    // const data = JSON.parse(message.toString()) as OvonicPacket
+    this.emit(topic, message.toString())
+    // if (data.msgId) {
+    //   this.emit(data.msgId, message.toString())
+    // } else {
+    //  this.emit(topic, message.toString())
+    // }
   }
 
   public async request (topic: string, message: OvonicPacket, callback?: PacketCallback): Promise<any> {
@@ -86,7 +87,7 @@ class OvonicMQTT extends EventEmitter {
         }
         this._client.publish(topic, JSON.stringify(message), callback)
         this._getApiRecv(message.msgId).then((data) => {
-          this.emit('wxMsgBack', data)
+          this.emit('MsgBack', data)
           resolve(data)
         })
       })
