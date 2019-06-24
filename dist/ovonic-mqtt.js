@@ -66,10 +66,10 @@ class OvonicMQTT extends events_1.EventEmitter {
         return this._client;
     }
     onReceiveMsg(topic, message) {
-        const data = JSON.parse(message.toString());
-        if (data.msgId) {
-            this.emit(data.msgId, message.toString());
-        }
+        // const data = JSON.parse(message.toString()) as OvonicPacket
+        // if (data.msgId) {
+        //   this.emit(data.msgId, message.toString())
+        // }
         this.emit(topic, message.toString());
     }
     publish(topic, message, callback) {
