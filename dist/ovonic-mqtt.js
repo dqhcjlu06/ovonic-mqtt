@@ -66,27 +66,32 @@ class OvonicMQTT extends events_1.EventEmitter {
         return this._client;
     }
     onReceiveMsg(topic, message) {
-        // console.log(topic, message.toString())
-        // const data = JSON.parse(message.toString()) as OvonicPacket
+        const data = JSON.parse(message.toString());
+        if (data.msgId) {
+            this.emit(data.msgId, message.toString());
+        }
         this.emit(topic, message.toString());
-        // if (data.msgId) {
-        //   this.emit(data.msgId, message.toString())
-        // } else {
-        //  this.emit(topic, message.toString())
-        // }
     }
-    request(topic, message, callback) {
+    publish(topic, message, callback) {
+        this._client.publish(topic, message, callback);
+    }
+    request(topic, message, timeout = 1000, callback) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
+                if (!message.msgId) {
+                    reject(new Error('msgId must needed'));
+                    return;
+                }
                 this._client.subscribe(message.msgId, { qos: 1 }, (error) => {
                     if (error) {
                         return reject(error);
                     }
                     this._client.publish(topic, JSON.stringify(message), callback);
-                    this._getApiRecv(message.msgId).then((data) => {
-                        this.emit('MsgBack', data);
-                        resolve(data);
-                    });
+                });
+                // this._client.publish(topic, JSON.stringify(message), callback)
+                this._getApiRecv(message.msgId, timeout).then((data) => {
+                    // this.emit('MsgBack', data)
+                    resolve(data);
                 });
             });
         });

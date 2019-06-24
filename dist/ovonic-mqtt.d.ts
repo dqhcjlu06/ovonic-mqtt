@@ -9,9 +9,9 @@ export declare type MqttClientEvent = 'reconnect' | 'connect' | 'close' | 'error
 export interface OvonicPacket {
     apiName: string;
     userId: string;
-    msgId: string;
-    responseClient: string;
     message: string;
+    msgId?: string;
+    responseClient?: string;
 }
 declare class OvonicMQTT extends EventEmitter {
     private _client;
@@ -22,7 +22,8 @@ declare class OvonicMQTT extends EventEmitter {
     connect(url: string, options: IClientOptions): Promise<{}>;
     readonly client: MqttClient;
     private onReceiveMsg;
-    request(topic: string, message: OvonicPacket, callback?: PacketCallback): Promise<any>;
+    publish(topic: string, message: string, callback?: PacketCallback): void;
+    request(topic: string, message: OvonicPacket, timeout?: number, callback?: PacketCallback): Promise<any>;
     private _getApiRecv;
 }
 export default OvonicMQTT;

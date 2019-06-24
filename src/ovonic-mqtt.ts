@@ -13,9 +13,9 @@ export type MqttClientEvent = 'reconnect' | 'connect' | 'close' |'error' | 'mess
 export interface OvonicPacket {
   apiName: string,
   userId: string,
-  msgId: string,
-  responseClient: string,
-  message: string
+  message: string,
+  msgId?: string,
+  responseClient?: string
 }
 
 class OvonicMQTT extends EventEmitter {
@@ -69,27 +69,33 @@ class OvonicMQTT extends EventEmitter {
   }
 
   private onReceiveMsg (topic: string, message: string | Buffer) {
-    // console.log(topic, message.toString())
-    // const data = JSON.parse(message.toString()) as OvonicPacket
+    const data = JSON.parse(message.toString()) as OvonicPacket
+    if (data.msgId) {
+      this.emit(data.msgId, message.toString())
+    }
     this.emit(topic, message.toString())
-    // if (data.msgId) {
-    //   this.emit(data.msgId, message.toString())
-    // } else {
-    //  this.emit(topic, message.toString())
-    // }
   }
 
-  public async request (topic: string, message: OvonicPacket, callback?: PacketCallback): Promise<any> {
+  public publish (topic: string, message: string, callback?: PacketCallback) {
+    this._client.publish(topic, message, callback)
+  }
+
+  public async request (topic: string, message: OvonicPacket, timeout= 1000, callback?: PacketCallback): Promise<any> {
     return new Promise((resolve, reject) => {
+      if (!message.msgId) {
+        reject(new Error('msgId must needed'))
+        return
+      }
       this._client.subscribe(message.msgId, {qos: 1}, (error) => {
         if (error) {
           return reject(error)
         }
         this._client.publish(topic, JSON.stringify(message), callback)
-        this._getApiRecv(message.msgId).then((data) => {
-          this.emit('MsgBack', data)
-          resolve(data)
-        })
+      })
+      // this._client.publish(topic, JSON.stringify(message), callback)
+      this._getApiRecv(message.msgId, timeout).then((data) => {
+        // this.emit('MsgBack', data)
+        resolve(data)
       })
     })
   }
