@@ -70,29 +70,31 @@ class OvonicMQTT extends EventEmitter {
 
   private onReceiveMsg (topic: string, message: string | Buffer) {
     // const data = JSON.parse(message.toString()) as OvonicPacket
-    // if (data.msgId) {
+    // if (data.msgId && this._clientId === data.responseClient) {
     //   this.emit(data.msgId, message.toString())
+    // } else {
+    //   this.emit(topic, message.toString())
     // }
-    this.emit(topic, message.toString())
+    this.emit(topic, JSON.parse(message.toString()))
   }
 
   public publish (topic: string, message: string, callback?: PacketCallback) {
     this._client.publish(topic, message, callback)
   }
 
-  public async request (topic: string, message: OvonicPacket, timeout= 1000, callback?: PacketCallback): Promise<any> {
+  public async request (topic: string, message: OvonicPacket, timeout= 10000, callback?: PacketCallback): Promise<any> {
     return new Promise((resolve, reject) => {
       if (!message.msgId) {
         this._client.publish(topic, JSON.stringify(message), callback)
         resolve({ status: 0 })
       } else {
+        // this._client.publish(topic, JSON.stringify(message), callback)
         this._client.subscribe(message.msgId, {qos: 1}, (error) => {
           if (error) {
             return reject(error)
           }
           this._client.publish(topic, JSON.stringify(message), callback)
         })
-        // this._client.publish(topic, JSON.stringify(message), callback)
         this._getApiRecv(message.msgId, timeout).then((data) => {
           // this.emit('MsgBack', data)
           resolve(data)
