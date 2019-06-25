@@ -15,7 +15,7 @@ export interface OvonicPacket {
   userId: string,
   message: string,
   msgId?: string,
-  responseClient?: string
+  // responseClient?: string
 }
 
 class OvonicMQTT extends EventEmitter {
