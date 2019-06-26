@@ -103,7 +103,7 @@ class OvonicMQTT extends EventEmitter {
     })
   }
 
-  private async _getApiRecv (msgId: string, timeout = 10000): Promise<string> {
+  private async _getApiRecv (msgId: string, timeout = 10000): Promise<Object> {
     return new Promise((resolve, reject) => {
       const timeOutHandle = setTimeout(() => {
         this._client.unsubscribe(msgId)
@@ -111,7 +111,7 @@ class OvonicMQTT extends EventEmitter {
         reject(new Error(`${msgId} 等待指令操作结果超时！当前超时时间为 ${timeout}`))
       }, timeout)
 
-      this.once(msgId, (data: string) => {
+      this.once(msgId, (data: Object) => {
         this._client.unsubscribe(msgId)
         this.removeAllListeners(msgId)
         resolve(data)
