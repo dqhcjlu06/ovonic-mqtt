@@ -11,7 +11,6 @@ export interface OvonicPacket {
     userId: string;
     message: string;
     msgId?: string;
-    responseClient?: string;
 }
 declare class OvonicMQTT extends EventEmitter {
     private _client;
@@ -23,7 +22,7 @@ declare class OvonicMQTT extends EventEmitter {
     readonly client: MqttClient;
     private onReceiveMsg;
     publish(topic: string, message: string, callback?: PacketCallback): void;
-    request(topic: string, message: OvonicPacket, timeout?: number, callback?: PacketCallback): Promise<any>;
+    request(topic: string, message: OvonicPacket, timeout?: number, callback?: PacketCallback): Promise<OvonicPacket>;
     private _getApiRecv;
 }
 export default OvonicMQTT;
