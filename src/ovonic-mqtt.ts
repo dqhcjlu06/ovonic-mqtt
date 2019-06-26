@@ -82,11 +82,12 @@ class OvonicMQTT extends EventEmitter {
     this._client.publish(topic, message, callback)
   }
 
-  public async request (topic: string, message: OvonicPacket, timeout= 10000, callback?: PacketCallback): Promise<any> {
+  public async request (topic: string, message: OvonicPacket, timeout= 10000, callback?: PacketCallback): Promise<OvonicPacket> {
     return new Promise((resolve, reject) => {
       if (!message.msgId) {
         this._client.publish(topic, JSON.stringify(message), callback)
-        resolve({ status: 0 })
+        message.message = JSON.stringify({ status: 0 })
+        resolve(message)
       } else {
         // this._client.publish(topic, JSON.stringify(message), callback)
         this._client.subscribe(message.msgId, {qos: 1}, (error) => {
@@ -103,7 +104,7 @@ class OvonicMQTT extends EventEmitter {
     })
   }
 
-  private async _getApiRecv (msgId: string, timeout = 10000): Promise<Object> {
+  private async _getApiRecv (msgId: string, timeout = 10000): Promise<OvonicPacket> {
     return new Promise((resolve, reject) => {
       const timeOutHandle = setTimeout(() => {
         this._client.unsubscribe(msgId)
@@ -111,7 +112,7 @@ class OvonicMQTT extends EventEmitter {
         reject(new Error(`${msgId} 等待指令操作结果超时！当前超时时间为 ${timeout}`))
       }, timeout)
 
-      this.once(msgId, (data: Object) => {
+      this.once(msgId, (data: OvonicPacket) => {
         this._client.unsubscribe(msgId)
         this.removeAllListeners(msgId)
         resolve(data)

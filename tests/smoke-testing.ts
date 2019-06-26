@@ -12,7 +12,7 @@ const options1 = {
   connectTimeout: 4000,
    // 认证信息
   username: 'secret',
-  password: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImJhciIsImlhdCI6MTU2MTQyODQ1NiwiZXhwIjoxNTYxNTE0ODU2fQ.3v8b_7tqEhFcTP3T9vN3wVYHeQ_RdmE86GGIutA6ZSg',
+  password: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImJhciIsImlhdCI6MTU2MTUxNTE3MywiZXhwIjoxNTYxNjAxNTczfQ.xU-7eznyddPyQH0xPlfNKDwrPy-oreBxNGQ6V_ecaC0',
   clientId,
   keepalive: 60,
   clean: true,
