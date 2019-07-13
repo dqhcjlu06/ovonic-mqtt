@@ -5,7 +5,7 @@
 import { EventEmitter } from 'events';
 import mqtt, { IClientOptions, MqttClient, PacketCallback } from 'mqtt'
 
-const MAX_TRY_RECONNECT_TIMES = 3
+const MAX_TRY_RECONNECT_TIMES = 5
 
 export type MqttClientEvent = 'reconnect' | 'connect' | 'close' |'error' | 'message'
   | 'offline' | 'disconnect' | 'end' | 'packetsend' | 'packetreceive'
@@ -36,8 +36,9 @@ class OvonicMQTT extends EventEmitter {
       if (this._isConnected) resolve()
       this._client = mqtt.connect(url, options)
       this._client.on('reconnect', () => {
+        this.emit('reconnect', { tryTimes: this._tryReconnectTimes})
         if (this._tryReconnectTimes++ > MAX_TRY_RECONNECT_TIMES) {
-          this._client.end()
+          // this._client.end()
           reject(new Error(`try connect ${url} with ${this._tryReconnectTimes} times error`))
         }
       })

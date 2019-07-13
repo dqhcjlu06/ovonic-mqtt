@@ -17,7 +17,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 const events_1 = require("events");
 const mqtt_1 = __importDefault(require("mqtt"));
-const MAX_TRY_RECONNECT_TIMES = 3;
+const MAX_TRY_RECONNECT_TIMES = 5;
 class OvonicMQTT extends events_1.EventEmitter {
     constructor() {
         super();
@@ -33,8 +33,9 @@ class OvonicMQTT extends events_1.EventEmitter {
                     resolve();
                 this._client = mqtt_1.default.connect(url, options);
                 this._client.on('reconnect', () => {
+                    this.emit('reconnect', { tryTimes: this._tryReconnectTimes });
                     if (this._tryReconnectTimes++ > MAX_TRY_RECONNECT_TIMES) {
-                        this._client.end();
+                        // this._client.end()
                         reject(new Error(`try connect ${url} with ${this._tryReconnectTimes} times error`));
                     }
                 });
