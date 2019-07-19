@@ -18,7 +18,7 @@ declare class OvonicMQTT extends EventEmitter {
     private _clientId;
     private _isConnected;
     constructor();
-    connect(url: string, options: IClientOptions): Promise<{}>;
+    connect(url: string, options: IClientOptions): Promise<void>;
     readonly client: MqttClient;
     private onReceiveMsg;
     publish(topic: string, message: string, callback?: PacketCallback): void;

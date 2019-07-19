@@ -32,37 +32,35 @@ class OvonicMQTT extends EventEmitter {
   public async connect (url: string, options: IClientOptions) {
     this._tryReconnectTimes = 0
     this._clientId = options.clientId || 'mqtt_unknow_client'
-    return new Promise((resolve, reject) => {
-      if (this._isConnected) resolve()
-      this._client = mqtt.connect(url, options)
-      this._client.on('reconnect', () => {
-        this.emit('reconnect', { tryTimes: this._tryReconnectTimes})
-        if (this._tryReconnectTimes++ > MAX_TRY_RECONNECT_TIMES) {
-          // this._client.end()
-          reject(new Error(`try connect ${url} with ${this._tryReconnectTimes} times error`))
-        }
-      })
-      this._client.on('connect', () => {
-        this.emit('connect')
-        this._client.on('message', this.onReceiveMsg.bind(this))
-        this._client.on('error', (error) => {
-          this.emit('error', error)
-        })
-        this._client.subscribe(this._clientId)
-        resolve()
-      })
-      this._client.on('close', () => {
-        this._isConnected = false
-        this.emit('close')
-      })
-      this._client.on('disconnect', () => {
-        this._isConnected = false
-        this.emit('disconnect')
-      })
-      this._client.on('offline', () => {
-        this._isConnected = false
-        this.emit('offline')
-      })
+    if (this._isConnected) return
+    this._client = mqtt.connect(url, options)
+    this._client.on('reconnect', () => {
+      this.emit('reconnect', { tryTimes: this._tryReconnectTimes})
+      if (this._tryReconnectTimes++ > MAX_TRY_RECONNECT_TIMES) {
+        // this._client.end()
+        // reject(new Error(`try connect ${url} with ${this._tryReconnectTimes} times error`))
+      }
+    })
+    this._client.on('connect', () => {
+      this.emit('connect')
+      this._isConnected = true
+    })
+    this._client.on('message', this.onReceiveMsg.bind(this))
+    this._client.on('error', (error) => {
+      this.emit('error', error)
+    })
+    this._client.subscribe(this._clientId)
+    this._client.on('close', () => {
+      this._isConnected = false
+      this.emit('close')
+    })
+    this._client.on('disconnect', () => {
+      this._isConnected = false
+      this.emit('disconnect')
+    })
+    this._client.on('offline', () => {
+      this._isConnected = false
+      this.emit('offline')
     })
   }
   public get client (): MqttClient {
